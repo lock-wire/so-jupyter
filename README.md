@@ -5,6 +5,16 @@ JupyterLab container prepared for interacting with Security Onion
 ```
 sudo salt-call pillar.get global:managerip | sed -n 2p | cut -d ' ' -f5
 ```
+or
+```
+sudo salt '*_manager*' --out=json pillar.get global:managerip | jq '.[]' | cut -d '"' -f2
+```
+
+## Get Registry Host
+```
+sudo salt '*_manager*' --out=json pillar.get global:registry_host | jq '.[]' | cut -d '"' -f2
+```
+
 ## Get Jupyter Lab Token
 ```
 sudo docker exec -it  so-jupyter jupyter server list | sed -n 2p | cut -d '/' -f4 | cut -d ' ' -f1
@@ -27,7 +37,7 @@ sudo docker image push securityonion-managersearch:5000/security-onion-solutions
 
 ## Run local image with password
 ```
-sudo docker run --rm -detached --name so-jupyter -p 8889:8888 -v /home/seconion/jupyter_lab:/home/jovyan/work:rw so-jupyter:so-jupyter start-notebook.py --ServerApp.allow_remote_access='True' --PasswordIdentityProvider.hashed_password='argon2:$argon2id$v=19$m=10240,t=10,p=8$rUpZrusSSaw0zLRTj0hYAw$vFZ3/Fg9yq0KBFtmWoHKZ+hSszGl9ue8lJt74iF9RJI'
+sudo docker run --rm -detached --name so-jupyter -p 8889:8888 -v /home/seconion/jupyter_lab:/home/jovyan/work:rw so-jupyter:so-jupyter start-notebook.py --ServerApp.allow_remote_access='True' --PasswordIdentityProvider.hashed_password='<password_hash_from_jupyter_server>'
 ```
 
 ## Run from registry with token
